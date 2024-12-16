@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Str;
+use Validator;
 
 class ProductController extends Controller
 {
@@ -19,15 +20,33 @@ class ProductController extends Controller
     }
     public function create(Request $request){
 
+        $validated = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'description' => 'max:255',
+            'price' => 'required|decimal:0,2|max:99999999.99|min:0.01',
+            'image' => 'url:http,https'
+        ]);
+
+        if ($validated->fails()){
+            return response()->json([
+                'message'=> 'Validation failed',
+                'errors' => $validated->errors()
+            ]);
+        };
+
+
+        $slug = Str::slug($request->title);
         $existedProduct = Product::where("slug", $request->slug)->first();
 
         if($existedProduct){
             return response()->json([
-                "message" => "Product already exists"
+                "message" => "Product already exists",
+                "errors"=> [
+                    "slug"=> "Product with this slug already exists"
+                ]   
             ], 400);
         }
 
-        $slug = Str::slug($request->title);
 
         $product = Product::create([
             "title" => $request->title,
