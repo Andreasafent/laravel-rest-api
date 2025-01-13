@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Validation\Rule;
 use Str;
 use Validator;
 
@@ -20,17 +21,17 @@ class ProductController extends Controller
     }
     public function create(Request $request){
 
-        $validated = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
             'description' => 'max:255',
             'price' => 'required|decimal:0,2|max:99999999.99|min:0.01',
             'image' => 'url:http,https'
         ]);
 
-        if ($validated->fails()){
+        if ($validator->fails()){
             return response()->json([
                 'message'=> 'Validation failed',
-                'errors' => $validated->errors()
+                'errors' => $validator->errors()
             ]);
         };
 
@@ -75,11 +76,28 @@ class ProductController extends Controller
         ]);
     }
     public function update(Request $request, $id){
+
         $product = Product::find($id);
         if($product === null){
             return response()->json([
                 "message" => "Product not found"
             ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'filled|max:255',
+            'description' => 'max:255',
+            'price' => 'decimal:0,2|max:99999999.99|min:0.01',
+            'image' => 'url:http,https',
+            // 'slug' => 'filled|unique:products,slug,'.$id,
+            'slug' => ['filled', Rule::unique ('products', 'slug')->ignore($id)]
+        ]);
+
+        if($validator->fails()) {
+            return response()->json([
+                "message" => "Validation failed",
+                "errors" => $validator->errors()
+            ], status:400);
         }
 
         $product->update($request->all());
