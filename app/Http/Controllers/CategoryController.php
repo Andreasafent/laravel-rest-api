@@ -13,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::withCount('products')->all();
+        $categories = Category::withCount('products')->get();
         //Select * FROM categories
 
         return response()->json([
@@ -77,7 +77,7 @@ class CategoryController extends Controller
 
         if ($validator->fails()){
             return response()->json([
-               'message'=> 'Validation failed',
+                'message'=> 'Validation failed',
                 'errors' => $validator->errors()
             ], status:400);
         };

@@ -28,6 +28,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
             'category_id' => 'filled|exists:categories,id',
+            'brand_id' => 'filled|exists:brands,id',
             'description' => 'max:255',
             'price' => 'required|decimal:0,2|max:99999999.99|min:0.01',
             'image' => 'url:http,https'
@@ -57,6 +58,7 @@ class ProductController extends Controller
         $product = Product::create([
             "title" => $request->title,
             "category_id" => $request->category_id,
+            "brand_id" => $request->brand_id,
             "description"=> $request->description,
             "price"=> $request->price,
             "image"=> $request->image,
@@ -106,6 +108,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'filled|max:255',
             'category_id'=>'filled|exists:categories,id',
+            'brand_id'=>'filled|exists:brands,id',
             'description' => 'max:255',
             'price' => 'decimal:0,2|max:99999999.99|min:0.01',
             'image' => 'url:http,https',

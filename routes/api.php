@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppController;
@@ -11,6 +12,7 @@ Route::get('/', [AppController::class,'index']);
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('products', ProductController::class);
+Route::apiResource('brands', BrandController::class);
 
 // Route::get('/products', [ProductController::class,'index']);
 // Route::post('/products', [ProductController::class,'store']);
