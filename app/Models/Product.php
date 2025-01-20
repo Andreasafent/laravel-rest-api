@@ -10,7 +10,8 @@ class Product extends Model
     protected $fillable = [
         "title", 
         "slug",
-        "category_id", 
+        "category_id",
+        "brand_id",
         "description",
         "price",
         "image"
@@ -22,7 +23,8 @@ class Product extends Model
     ];
 
     protected $hidden=[
-        "category_id"
+        "category_id",
+        "brand_id"
     ];
 
     public function category(): BelongsTo
